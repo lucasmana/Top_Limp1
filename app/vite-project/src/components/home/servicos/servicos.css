@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@494&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&display=swap');
+
+/* Animações */
+.arrow-animate {
+  animation: slideInFromLeft 0.8s ease-out forwards;
+}
+
+.text-animate {
+  animation: fadeInFromBottom 0.8s ease-out forwards;
+  animation-delay: 0.3s;
+  opacity: 0;
+}
+
+@keyframes slideInFromLeft {
+  from {
+    transform: translateX(-400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInFromBottom {
+  from {
+    transform: translateY(200px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.home-info-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+
+.home-info-title {
+    font-family: "Poppins", sans-serif;
+  color: rgb(255, 255, 255);
+  font-size: 3.1rem;
+  font-weight: 660;
+  position:relative;
+  top: 40px;
+  left: 120px;
+  margin-bottom: 10rem;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.home-info-layout {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  justify-content: flex-start;
+}
+
+/* card azul da esquerda */
+.home-info-main-card {
+  background: #0D77CE; 
+  position: relative;
+  left: 10%;
+  bottom: 20px;
+  border: 2px solid rgba(255, 252, 252, 0.3);
+  border-radius: 30px;
+  padding: 2rem;
+  max-width: 200px;
+  height: 260px;
+  backdrop-filter: blur(10px);
+  box-shadow: 1px 2px 2px 2px rgba(240, 239, 239, 0.37) ;
+}
+
+.home-info-main-card h3{
+  position: relative;
+  top: -15px;
+  left: 1px;
+  color: #ffffff;
+  font-size: 1.4rem;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  margin: 0;
+  
+}
+
+.destaque-maior{
+  position: relative;
+   left: -10px;
+   display: block;
+  font-family: "Poppins", sans-serif;
+  font-size: 2.1rem;
+  line-height: 1.2;
+  font-weight: 800;
+}
+/* seta da section azul */
+.home-info-arrow {
+  width: 50px;
+  height: 50px;
+  left: 8%; 
+  bottom: 1em;
+  background-color: #f5f4f2;
+  border-radius: 50%;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 10;
+}
+
+/* Seta perfeitamente centralizada */
+.home-info-arrow::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 49%;
+  width: 10px;
+  height: 10px;
+  border-top: 2px solid #1e90ff;
+  border-right: 2px solid #1e90ff;
+  transform: translate(-50%, -50%) rotate(45deg);
+  transition: all 0.3s ease;
+}
+
+.home-info-arrow:hover {
+  background-color: #1a9648;
+  transform: scale(1.1);
+}
+
+.home-info-arrow:hover::before {
+  border-color: #1e90ff;
+}
+/* seta da section azul ate aqui */
+
+
+.home-info-services {
+  display: inline-flex;
+  position: relative;
+  left: -60px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.2rem;
+  flex: 1;
+  max-width: 1000px;
+}
+
+.home-info-service-card {
+  width: 180px;
+  height: 200px;
+  position: relative;
+  top: -30px;
+  left: 15%;
+  background: #EDEBE1;
+  border-radius: 35px;
+  padding: 1.5rem;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+
+}
+
+.home-info-service-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.home-info-service-img {
+  position: relative;
+  top :-90px;
+  width: 125px;
+  height: 125px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto 1.5rem;
+}
+
+.home-info-service-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.home-info-service-card p {
+  position: absolute;
+  top: 38%;
+  left: 10%;
+  transform: translate(-50%, -50%);
+
+  width: 80%;
+
+  font-family: "Montserrat", sans-serif;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #0D77CE;
+
+  line-height: 1.3;
+  letter-spacing: 0.2px;
+  text-align: center;
+
+  word-break: keep-all;
+}

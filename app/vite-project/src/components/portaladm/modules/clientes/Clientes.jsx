@@ -1,0 +1,1176 @@
+import React, { useState, useEffect } from 'react';
+import './Clientes.css';
+import { clientesAPI } from '../../../../services/api';
+
+const Clientes = () => {
+  const [showForm, setShowForm] = useState(false);
+  const [showClienteView, setShowClienteView] = useState(false);
+  const [viewCliente, setViewCliente] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+  const [showOrcamentoForm, setShowOrcamentoForm] = useState(false);
+  const [estruturas, setEstruturas] = useState([]);
+  const [orcamentoData, setOrcamentoData] = useState({
+    numeroOrcamento: '',
+    status: 'ativo',
+    referente: '',
+    tipoServico: '',
+    periodicidade: '',
+    validade: '',
+    valorTotal: '',
+    parcelas: '',
+    dataAprovacao: '',
+    incluiColeta: false,
+    incluiRelatorio: false,
+    arquivoPdf: null,
+    observacoes: ''
+  });
+  const [currentCliente, setCurrentCliente] = useState(null);
+  const [formData, setFormData] = useState({
+    razaoSocial: '',
+    cnpj: '',
+    grupoEconomico: '',
+    email: '',
+    telefone: '',
+    endereco: '',
+    cidade: '',
+    estado: '',
+    contatoResponsavel: '',
+    telefoneResponsavel: '',
+    tipoServicoPrincipal: '',
+    status: 'ativo',
+    linkPortal: '',
+    emailPortal: '',
+    documentosExigidos: '',
+    observacoes: ''
+  });
+
+  const [clientes, setClientes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [filtroNome, setFiltroNome] = useState('');
+  const [filtroStatus, setFiltroStatus] = useState('');
+
+  // Carregar clientes do MongoDB ao montar o componente
+  useEffect(() => {
+    carregarClientes();
+  }, []);
+
+  const carregarClientes = async () => {
+    try {
+      setLoading(true);
+      const clientesData = await clientesAPI.listar();
+      setClientes(clientesData);
+      setError('');
+    } catch (error) {
+      console.error('Erro ao carregar clientes:', error);
+      setError('Erro ao carregar clientes. Verifique a conexão com o servidor.');
+      // Carregar dados de exemplo se a API falhar
+      setClientes([
+        {
+          _id: 1,
+          razaoSocial: 'Hospital São Lucas',
+          cnpj: '12.345.678/0001-90',
+          grupoEconomico: 'Rede Saúde',
+          cidade: 'São Paulo',
+          estado: 'SP',
+          status: 'ativo',
+          tipoServicoPrincipal: 'Reservatório',
+          telefone: '(81) 3234-5678'
+        },
+        {
+          _id: 2,
+          razaoSocial: 'Escola Municipal',
+          cnpj: '98.765.432/0001-10',
+          grupoEconomico: 'Prefeitura',
+          cidade: 'Rio de Janeiro',
+          estado: 'RJ',
+          status: 'avencer',
+          tipoServicoPrincipal: 'Bebedouros',
+          telefone: '(81) 3456-7890'
+        }
+      ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleFiltroNome = (e) => {
+    setFiltroNome(e.target.value);
+    buscarClientes(e.target.value, filtroStatus);
+  };
+
+  const handleFiltroStatus = (e) => {
+    setFiltroStatus(e.target.value);
+    buscarClientes(filtroNome, e.target.value);
+  };
+
+  const buscarClientes = async (nome = '', status = '') => {
+    try {
+      setLoading(true);
+      let url = `http://localhost:3001/api/clientes?`;
+      
+      if (nome) {
+        url += `nome=${encodeURIComponent(nome)}&`;
+      }
+      
+      if (status) {
+        url += `status=${encodeURIComponent(status)}`;
+      }
+      
+      // Remover & final se houver
+      url = url.replace(/&$/, '');
+      
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Erro ao buscar clientes');
+      
+      const clientesData = await response.json();
+      setClientes(clientesData);
+      setError('');
+    } catch (error) {
+      console.error('Erro ao buscar clientes:', error);
+      setError('Erro ao buscar clientes. Verifique a conexão com o servidor.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleCNPJChange = (e) => {
+    let value = e.target.value.replace(/\D/g, '');
+    if (value.length <= 14) {
+      if (value.length <= 2) {
+        // Mantém o valor como está
+      } else if (value.length <= 5) {
+        value = value.replace(/^(\d{2})(\d{0,3})/, '$1.$2');
+      } else if (value.length <= 8) {
+        value = value.replace(/^(\d{2})(\d{3})(\d{0,3})/, '$1.$2.$3');
+      } else if (value.length <= 12) {
+        value = value.replace(/^(\d{2})(\d{3})(\d{3})(\d{0,4})/, '$1.$2.$3/$4');
+      } else {
+        value = value.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{0,2})/, '$1.$2.$3/$4-$5');
+      }
+    }
+    setFormData(prev => ({
+      ...prev,
+      cnpj: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Enviar para MongoDB
+      const novoCliente = await clientesAPI.criar(formData);
+      
+      // Adicionar à lista local
+      setClientes([...clientes, novoCliente]);
+      
+      // Fechar formulário e limpar
+      setShowForm(false);
+      setFormData({
+        razaoSocial: '',
+        cnpj: '',
+        grupoEconomico: '',
+        email: '',
+        telefone: '',
+        endereco: '',
+        cidade: '',
+        estado: '',
+        contatoResponsavel: '',
+        telefoneResponsavel: '',
+        tipoServicoPrincipal: '',
+        status: 'ativo',
+        linkPortal: '',
+        emailPortal: '',
+        documentosExigidos: '',
+        observacoes: ''
+      });
+      
+      alert('Cliente cadastrado com sucesso no MongoDB!');
+    } catch (error) {
+      console.error('Erro ao cadastrar cliente:', error);
+      alert(`Erro ao cadastrar cliente: ${error.message}`);
+    }
+  };
+
+  const handleEditarCliente = (cliente) => {
+    setCurrentCliente(cliente);
+    setEditMode(true);
+    setShowForm(true);
+    setFormData({
+      razaoSocial: cliente.razaoSocial || '',
+      cnpj: cliente.cnpj || '',
+      grupoEconomico: cliente.grupoEconomico || '',
+      email: cliente.email || '',
+      telefone: cliente.telefone || '',
+      endereco: cliente.endereco || '',
+      cidade: cliente.cidade || '',
+      estado: cliente.estado || '',
+      contatoResponsavel: cliente.contatoResponsavel || '',
+      telefoneResponsavel: cliente.telefoneResponsavel || '',
+      tipoServicoPrincipal: cliente.tipoServicoPrincipal || '',
+      status: cliente.status || 'ativo',
+      linkPortal: cliente.linkPortal || '',
+      emailPortal: cliente.emailPortal || '',
+      documentosExigidos: cliente.documentosExigidos || '',
+      observacoes: cliente.observacoes || ''
+    });
+  };
+
+  const handleSalvarEdicao = async (e) => {
+    e.preventDefault();
+    try {
+      if (!currentCliente) return;
+      
+      console.log('Tentando atualizar cliente:', currentCliente._id);
+      console.log('Dados a serem enviados:', formData);
+      
+      // Atualizar cliente na API
+      const clienteAtualizado = await clientesAPI.atualizar(currentCliente._id, formData);
+      
+      console.log('Cliente atualizado com sucesso:', clienteAtualizado);
+      
+      // Atualizar na lista local
+      setClientes(clientes.map(cliente => 
+        cliente._id === currentCliente._id ? clienteAtualizado : cliente
+      ));
+      
+      // Fechar modal e resetar
+      setShowForm(false);
+      setEditMode(false);
+      setCurrentCliente(null);
+      setFormData({
+        razaoSocial: '',
+        cnpj: '',
+        grupoEconomico: '',
+        email: '',
+        telefone: '',
+        endereco: '',
+        cidade: '',
+        estado: '',
+        contatoResponsavel: '',
+        telefoneResponsavel: '',
+        tipoServicoPrincipal: '',
+        status: 'ativo',
+        linkPortal: '',
+        emailPortal: '',
+        documentosExigidos: '',
+        observacoes: ''
+      });
+      
+      alert('Cliente atualizado com sucesso!');
+    } catch (error) {
+      console.error('Erro completo ao atualizar cliente:', error);
+      alert(`Erro ao atualizar cliente: ${error.message || 'Verifique o console para mais detalhes'}`);
+    }
+  };
+
+  const handleVerCliente = (cliente) => {
+    setViewCliente(cliente);
+    setShowClienteView(true);
+  };
+
+  const handleCloseView = () => {
+    setShowClienteView(false);
+    setViewCliente(null);
+  };
+
+  const handleNovoOrcamento = () => {
+    setShowOrcamentoForm(true);
+    // Gerar número automático de orçamento
+    const numeroAleatorio = Math.floor(10000000 + Math.random() * 90000000);
+    setOrcamentoData(prev => ({
+      ...prev,
+      numeroOrcamento: numeroAleatorio.toString()
+    }));
+  };
+
+  const handleOrcamentoChange = (e) => {
+    const { name, value, type, checked, files } = e.target;
+    setOrcamentoData(prev => ({
+      ...prev,
+      [name]: type === 'checkbox' ? checked : type === 'file' ? files[0] : value
+    }));
+  };
+
+  const handleAddEstrutura = () => {
+    const novaEstrutura = {
+      id: Date.now(),
+      tipo: '',
+      descricao: '',
+      capacidade: '',
+      relatorios: ''
+    };
+    setEstruturas(prev => [...prev, novaEstrutura]);
+  };
+
+  const handleRemoveEstrutura = (id) => {
+    setEstruturas(prev => prev.filter(estrutura => estrutura.id !== id));
+  };
+
+  const handleEstruturaChange = (id, field, value) => {
+    setEstruturas(prev => prev.map(estrutura => 
+      estrutura.id === id ? { ...estrutura, [field]: value } : estrutura
+    ));
+  };
+
+  const handleCancelarOrcamento = () => {
+    setShowOrcamentoForm(false);
+    setOrcamentoData({
+      numeroOrcamento: '',
+      status: 'ativo',
+      referente: '',
+      tipoServico: '',
+      periodicidade: '',
+      validade: '',
+      valorTotal: '',
+      parcelas: '',
+      dataAprovacao: '',
+      incluiColeta: false,
+      incluiRelatorio: false,
+      arquivoPdf: null,
+      observacoes: ''
+    });
+    setEstruturas([]);
+  };
+
+  const handleCriarOrcamento = async () => {
+    try {
+      // Preparar dados do orçamento para salvar
+      const orcamentoParaSalvar = {
+        ...orcamentoData,
+        clienteId: viewCliente.id,
+        clienteNome: viewCliente.razaoSocial,
+        clienteCnpj: viewCliente.cnpj,
+        dataCriacao: new Date().toISOString(),
+        estruturas: estruturas.map(estrutura => ({
+          ...estrutura,
+          id: undefined // Remover id temporário
+        }))
+      };
+
+      // Salvar no banco de dados
+      const response = await fetch('http://localhost:3001/api/orcamentos', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orcamentoParaSalvar),
+      });
+
+      if (response.ok) {
+        const result = await response.json();
+        console.log('Orçamento salvo com sucesso:', result);
+        
+        // Limpar formulário
+        handleCancelarOrcamento();
+        
+        // Mostrar mensagem de sucesso
+        alert('Orçamento criado com sucesso!');
+      } else {
+        throw new Error('Erro ao salvar orçamento');
+      }
+    } catch (error) {
+      console.error('Erro ao criar orçamento:', error);
+      alert('Erro ao criar orçamento. Tente novamente.');
+    }
+  };
+
+  const handleCancel = () => {
+    setShowForm(false);
+    setEditMode(false);
+    setCurrentCliente(null);
+    setFormData({
+      razaoSocial: '',
+      cnpj: '',
+      grupoEconomico: '',
+      email: '',
+      telefone: '',
+      endereco: '',
+      cidade: '',
+      estado: '',
+      contatoResponsavel: '',
+      telefoneResponsavel: '',
+      tipoServicoPrincipal: '',
+      status: 'ativo',
+      linkPortal: '',
+      emailPortal: '',
+      documentosExigidos: '',
+      observacoes: ''
+    });
+  };
+
+  // Formatar dados para exibição na tabela
+  const formatarClienteParaTabela = (cliente) => ({
+    id: cliente._id,
+    nome: cliente.razaoSocial,
+    tipo: cliente.tipoServicoPrincipal || 'Não definido',
+    contato: cliente.telefone || 'Não informado',
+    ultimoServico: '-',
+    proximoServico: '-',
+    status: cliente.status
+  });
+
+  return (
+    <div className="portaladm-clientes">
+      {showClienteView && viewCliente ? (
+        // Tela completa de visualização do cliente
+        <>
+          <div className="cliente-view-header">
+            <div className="header-content">
+              <h2>Visualização do Cliente</h2>
+              <button className="btn-primary" onClick={handleNovoOrcamento}>
+                + Novo Orçamento
+              </button>
+            </div>
+            <button className="back-btn" onClick={handleCloseView}>
+              ← Voltar 
+            </button>
+          </div>
+          
+          <div className="cliente-view-container">
+            <div className="view-content">
+              <div className="view-section">
+                <h4>Dados Principais</h4>
+                <div className="view-row">
+                  <span className="view-label">Razão Social:</span>
+                  <span className="view-value">{viewCliente.razaoSocial || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">CNPJ:</span>
+                  <span className="view-value">{viewCliente.cnpj || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Grupo Econômico:</span>
+                  <span className="view-value">{viewCliente.grupoEconomico || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Status:</span>
+                  <span className={`status-badge status-${viewCliente.status}`}>
+                    {viewCliente.status || 'Não informado'}
+                  </span>
+                </div>
+              </div>
+
+              <div className="view-section">
+                <h4>Contato</h4>
+                <div className="view-row">
+                  <span className="view-label">Telefone:</span>
+                  <span className="view-value">{viewCliente.telefone || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Contato Responsável:</span>
+                  <span className="view-value">{viewCliente.contatoResponsavel || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Telefone Responsável:</span>
+                  <span className="view-value">{viewCliente.telefoneResponsavel || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">E-mail:</span>
+                  <span className="view-value">{viewCliente.email || 'Não informado'}</span>
+                </div>
+              </div>
+
+              <div className="view-section">
+                <h4>Endereço</h4>
+                <div className="view-row">
+                  <span className="view-label">Endereço:</span>
+                  <span className="view-value">{viewCliente.endereco || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Cidade:</span>
+                  <span className="view-value">{viewCliente.cidade || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Estado:</span>
+                  <span className="view-value">{viewCliente.estado || 'Não informado'}</span>
+                </div>
+              </div>
+
+              <div className="view-section">
+                <h4>Serviços</h4>
+                <div className="view-row">
+                  <span className="view-label">Tipo de Serviço Principal:</span>
+                  <span className="view-value">{viewCliente.tipoServicoPrincipal || 'Não informado'}</span>
+                </div>
+              </div>
+
+              <div className="view-section">
+                <h4>Portal</h4>
+                <div className="view-row">
+                  <span className="view-label">Link do Portal:</span>
+                  {viewCliente.linkPortal ? (
+                    <a 
+                      href={viewCliente.linkPortal} 
+                      target="_blank" 
+                      rel="noopener noreferrer"
+                      className="portal-link"
+                    >
+                      {viewCliente.linkPortal}
+                    </a>
+                  ) : (
+                    <span className="view-value">Não informado</span>
+                  )}
+                </div>
+                <div className="view-row">
+                  <span className="view-label">E-mail do Portal:</span>
+                  <span className="view-value">{viewCliente.emailPortal || 'Não informado'}</span>
+                </div>
+              </div>
+
+              <div className="view-section">
+                <h4>Informações Adicionais</h4>
+                <div className="view-row">
+                  <span className="view-label">Documentos Exigidos:</span>
+                  <span className="view-value">{viewCliente.documentosExigidos || 'Não informado'}</span>
+                </div>
+                <div className="view-row">
+                  <span className="view-label">Observações:</span>
+                  <span className="view-value">{viewCliente.observacoes || 'Não informado'}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      ) : (
+        // Tela normal de gestão de clientes
+        <>
+          <h2>Gestão de Clientes</h2>
+          
+          {error && (
+            <div style={{
+              background: '#fed7d7',
+              color: '#742a2a',
+              padding: '1rem',
+              borderRadius: '6px',
+              marginBottom: '1rem'
+            }}>
+              {error}
+            </div>
+          )}
+          
+          <div className="clientes-actions">
+            <button className="btn-primary" onClick={() => setShowForm(true)}>+ Novo Cliente</button>
+            <button className="btn-secondary" onClick={carregarClientes}>Atualizar</button>
+          </div>
+
+          {showForm && (
+            <div className="modal-overlay" onClick={handleCancel}>
+              <div className="modal-form" onClick={(e) => e.stopPropagation()}>
+                <div className="form-header">
+                  <h3>{editMode ? 'Editar Cliente' : 'Cadastrar Novo Cliente'}</h3>
+                </div>
+                
+                <form onSubmit={editMode ? handleSalvarEdicao : handleSubmit} className="cliente-form">
+                  <div className="form-grid">
+                    <div className="form-group">
+                      <label htmlFor="razaoSocial">Razão Social *</label>
+                      <input
+                        type="text"
+                        id="razaoSocial"
+                        name="razaoSocial"
+                        value={formData.razaoSocial}
+                        onChange={handleInputChange}
+                        required
+                       
+                       />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="cnpj">CNPJ *</label>
+                      <input
+                        type="text"
+                        id="cnpj"
+                        name="cnpj"
+                        value={formData.cnpj}
+                        onChange={handleCNPJChange}
+                        required
+                        placeholder="00.000.000/0001-00"
+                        maxLength="18"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="grupoEconomico">Grupo Econômico</label>
+                      <input
+                        type="text"
+                        id="grupoEconomico"
+                        name="grupoEconomico"
+                        value={formData.grupoEconomico}
+                        onChange={handleInputChange}
+                       
+                       />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="email">E-mail</label>
+                      <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                       
+                       />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="telefone">Telefone</label>
+                      <input
+                        type="tel"
+                        id="telefone"
+                        name="telefone"
+                        value={formData.telefone}
+                        onChange={handleInputChange}
+                        placeholder="(00) 0000-0000"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="endereco">Endereço</label>
+                      <input
+                        type="text"
+                        id="endereco"
+                        name="endereco"
+                        value={formData.endereco}
+                        onChange={handleInputChange}
+                       
+                       />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="cidade">Cidade</label>
+                      <input
+                        type="text"
+                        id="cidade"
+                        name="cidade"
+                        value={formData.cidade}
+                        onChange={handleInputChange}
+                       
+                       />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="estado">Estado</label>
+                      <input
+                        type="text"
+                        id="estado"
+                        name="estado"
+                        value={formData.estado}
+                        onChange={handleInputChange}
+                       
+                         maxLength="2"
+                        style={{ textTransform: 'uppercase' }}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="contatoResponsavel">Contato Responsável</label>
+                      <input
+                        type="text"
+                        id="contatoResponsavel"
+                        name="contatoResponsavel"
+                        value={formData.contatoResponsavel}
+                        onChange={handleInputChange}
+                       
+                        />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="telefoneResponsavel">Telefone do Responsável</label>
+                      <input
+                        type="tel"
+                        id="telefoneResponsavel"
+                        name="telefoneResponsavel"
+                        value={formData.telefoneResponsavel}
+                        onChange={handleInputChange}
+                        placeholder="(00) 0000-0000"
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="tipoServicoPrincipal">Tipo de Serviço Principal</label>
+                      <select
+                        id="tipoServicoPrincipal"
+                        name="tipoServicoPrincipal"
+                        value={formData.tipoServicoPrincipal}
+                        onChange={handleInputChange}
+                      >
+                        <option value="">Selecione...</option>
+                        <option value="Reservatório">Reservatório</option>
+                        <option value="Bebedouro">Bebedouro</option>
+                        <option value="Coifa">Coifa</option>
+                        <option value="Ar Condicionado">Ar Condicionado</option>
+                        <option value="Outros">Outros</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group">
+                      <label htmlFor="status">Status</label>
+                      <select
+                        id="status"
+                        name="status"
+                        value={formData.status}
+                        onChange={handleInputChange}
+                      >
+                        <option value="ativo">Ativo</option>
+                        <option value="vencido">Vencido</option>
+                        <option value="avencer">A Vencer</option>
+                        <option value="sem-agendamento">Sem Agendamento</option>
+                        <option value="inativo">Inativo</option>
+                      </select>
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label htmlFor="linkPortal">Link do Portal de Documentação</label>
+                      <input
+                        type="url"
+                        id="linkPortal"
+                        name="linkPortal"
+                        value={formData.linkPortal}
+                        onChange={handleInputChange}
+                        placeholder="https://..."
+                      />
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label htmlFor="emailPortal">E-mail do Portal de Documentação</label>
+                      <input
+                        type="email"
+                        id="emailPortal"
+                        name="emailPortal"
+                        value={formData.emailPortal}
+                        onChange={handleInputChange}
+                        
+                       />
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label htmlFor="documentosExigidos">Documentos Exigidos pelo Cliente</label>
+                      <input
+                        type="text"
+                        id="documentosExigidos"
+                        name="documentosExigidos"
+                        value={formData.documentosExigidos}
+                        onChange={handleInputChange}
+                        
+                       />
+                    </div>
+
+                    <div className="form-group full-width">
+                      <label htmlFor="observacoes">Observações</label>
+                      <textarea
+                        id="observacoes"
+                        name="observacoes"
+                        value={formData.observacoes}
+                        onChange={handleInputChange}
+                        rows="4"
+                        
+                       ></textarea>
+                    </div>
+                  </div>
+
+                  <div className="form-actions">
+                    <button type="button" className="btn-cancelar" onClick={handleCancel}>Cancelar</button>
+                    <button type="submit" className="btn-criar">
+                      {editMode ? 'Salvar Alterações' : 'Criar Cliente'}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
+
+          <div className="clientes-filters">
+            <div className="filtro-busca">
+              <svg className="lupa-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              <input 
+                type="text" 
+                placeholder="Buscar cliente por nome, CNPJ ou cidade..." 
+                className="filter-input"
+                value={filtroNome}
+                onChange={handleFiltroNome}
+              />
+            </div>
+            <select 
+              className="filter-select"
+              value={filtroStatus}
+              onChange={handleFiltroStatus}
+            >
+              <option value="">Todos os Status</option>
+              <option value="ativo">Ativo</option>
+              <option value="avencer">A Vencer</option>
+              <option value="vencido">Vencido</option>
+              <option value="sem-agendamento">Sem Agendamento</option>
+              <option value="inativo">Inativo</option>
+            </select>
+          </div>
+          
+          <div className="clientes-stats">
+            <span className="stat-text">
+              Ativo: {clientes.filter(c => c.status === 'ativo').length}
+            </span>
+          </div>
+
+          <div className="clientes-blocks">
+            {loading ? (
+              <div className="loading-message">
+                <div className="loading-spinner"></div>
+                <p>Carregando clientes do MongoDB...</p>
+              </div>
+            ) : (
+              clientes.map((cliente) => {
+                const clienteFormatado = formatarClienteParaTabela(cliente);
+                return (
+                  <div key={cliente._id || cliente.id} className="cliente-block">
+                    <div className="block-header">
+                      <div className="cliente-info">
+                        <h3 className="cliente-nome">{(clienteFormatado.nome || '').toUpperCase()}</h3>
+                        <div className="cliente-documento">
+                          {cliente.cnpj || 'Não informado'}
+                        </div>
+                      </div>
+                      <span className={`status-badge status-${clienteFormatado.status}`}>
+                        {clienteFormatado.status === 'ativo' ? 'Ativo' : 
+                         clienteFormatado.status === 'avencer' ? 'A Vencer' :
+                         clienteFormatado.status === 'vencido' ? 'Vencido' :
+                         clienteFormatado.status === 'sem-agendamento' ? 'Sem Agendamento' :
+                         clienteFormatado.status === 'inativo' ? 'Inativo' : clienteFormatado.status}
+                      </span>
+                    </div>
+                    
+                    <div className="block-content">
+                      <div className="info-row">
+                        <span className="info-value">
+                          <svg className="local-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                          </svg>
+                          {(cliente.cidade || 'Não informada').toUpperCase()}{cliente.estado ? `/${cliente.estado.toUpperCase()}` : ''}
+                        </span>
+                      </div>
+                      
+                      <div className="info-row">
+                        <span className="info-value">
+                          <svg className="telefone-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                          </svg>
+                          {cliente.telefoneResponsavel || cliente.telefone || 'Não informado'}
+                        </span>
+                      </div>
+                      
+                      <div className="info-row">
+                        <span className="servico-badge">
+                          {clienteFormatado.tipo}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div className="block-actions">
+                      <button className="btn-block-action" onClick={() => handleVerCliente(cliente)}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        Ver
+                      </button>
+                      <button className="btn-block-action" onClick={() => handleEditarCliente(cliente)}>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                          <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                        </svg>
+                        Editar
+                      </button>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+            
+            {!loading && clientes.length === 0 && (
+              <div className="empty-state">
+                <div className="empty-icon">📋</div>
+                <h3>Nenhum cliente cadastrado</h3>
+                <p>Clique em "+ Novo Cliente" para cadastrar seu primeiro cliente</p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
+
+      {/* Modal de Novo Orçamento */}
+      {showOrcamentoForm && (
+        <div className="modal-overlay" onClick={handleCancelarOrcamento}>
+          <div className="modal-orcamento" onClick={(e) => e.stopPropagation()}>
+            <div className="form-header">
+              <h3>Novo Orçamento - {viewCliente?.razaoSocial}</h3>
+            </div>
+            
+            <form onSubmit={handleCriarOrcamento} className="orcamento-form">
+              <div className="form-grid">
+                <div className="form-group">
+                  <label htmlFor="numeroOrcamento">Número do Orçamento *</label>
+                  <input
+                    type="text"
+                    id="numeroOrcamento"
+                    name="numeroOrcamento"
+                    value={orcamentoData.numeroOrcamento}
+                    onChange={handleOrcamentoChange}
+                    required
+                    readOnly
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="status">Status</label>
+                  <select
+                    id="status"
+                    name="status"
+                    value={orcamentoData.status}
+                    onChange={handleOrcamentoChange}
+                  >
+                    <option value="ativo">Ativo</option>
+                    <option value="cancelado">Cancelado</option>
+                    <option value="declinado">Declinado</option>
+                    <option value="voltou-comercial">Voltou para Comercial</option>
+                    <option value="vencido">Vencido</option>
+                  </select>
+                </div>
+
+                <div className="form-group full-width">
+                  <label htmlFor="referente">Referente (Descrição do Serviço)</label>
+                  <input
+                    type="text"
+                    id="referente"
+                    name="referente"
+                    value={orcamentoData.referente}
+                    onChange={handleOrcamentoChange}
+                    placeholder="Limpeza dos Reservatórios..."
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="tipoServico">Tipo de Serviço</label>
+                  <select
+                    id="tipoServico"
+                    name="tipoServico"
+                    value={orcamentoData.tipoServico}
+                    onChange={handleOrcamentoChange}
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="limpeza-reservatorios">Limpeza de Reservatórios</option>
+                    <option value="desinfeccao-bebedouros">Desinfecção Bebedouros</option>
+                    <option value="limpeza-coifa">Limpeza Coifa</option>
+                    <option value="limpeza-silo">Limpeza Silo</option>
+                    <option value="limpeza-tanque">Limpeza Tanque</option>
+                    <option value="coleta-agua">Coleta de Água</option>
+                    <option value="outros">Outros</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="periodicidade">Periodicidade</label>
+                  <select
+                    id="periodicidade"
+                    name="periodicidade"
+                    value={orcamentoData.periodicidade}
+                    onChange={handleOrcamentoChange}
+                  >
+                    <option value="">Selecione...</option>
+                    <option value="mensal">Mensal</option>
+                    <option value="bimestral">Bimestral</option>
+                    <option value="trimestral">Trimestral</option>
+                    <option value="quadrimestral">Quadrimestral</option>
+                    <option value="semestral">Semestral</option>
+                    <option value="anual">Anual</option>
+                    <option value="unico">Único</option>
+                  </select>
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="validade">Validade (meses)</label>
+                  <input
+                    type="number"
+                    id="validade"
+                    name="validade"
+                    value={orcamentoData.validade}
+                    onChange={handleOrcamentoChange}
+                    min="1"
+                    max="50"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="valorTotal">Valor Total (R$)</label>
+                  <input
+                    type="text"
+                    id="valorTotal"
+                    name="valorTotal"
+                    value={orcamentoData.valorTotal}
+                    onChange={handleOrcamentoChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="parcelas">Parcelas</label>
+                  <input
+                    type="number"
+                    id="parcelas"
+                    name="parcelas"
+                    value={orcamentoData.parcelas}
+                    onChange={handleOrcamentoChange}
+                    min="1"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="dataAprovacao">Data de Aprovação</label>
+                  <input
+                    type="date"
+                    id="dataAprovacao"
+                    name="dataAprovacao"
+                    value={orcamentoData.dataAprovacao}
+                    onChange={handleOrcamentoChange}
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label>Inclui Coleta de Água?</label>
+                  <div className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      id="incluiColeta"
+                      name="incluiColeta"
+                      checked={orcamentoData.incluiColeta}
+                      onChange={handleOrcamentoChange}
+                    />
+                    <label htmlFor="incluiColeta" className="toggle-label">
+                      <span className="toggle-slider"></span>
+                      <span className="toggle-text">
+                        {orcamentoData.incluiColeta ? 'Sim' : 'Não'}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>Inclui Relatório Fotográfico?</label>
+                  <div className="toggle-switch">
+                    <input
+                      type="checkbox"
+                      id="incluiRelatorio"
+                      name="incluiRelatorio"
+                      checked={orcamentoData.incluiRelatorio}
+                      onChange={handleOrcamentoChange}
+                    />
+                    <label htmlFor="incluiRelatorio" className="toggle-label">
+                      <span className="toggle-slider"></span>
+                      <span className="toggle-text">
+                        {orcamentoData.incluiRelatorio ? 'Sim' : 'Não'}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="form-group full-width">
+                  <label htmlFor="arquivoPdf">Arquivo PDF do Orçamento</label>
+                  <input
+                    type="file"
+                    id="arquivoPdf"
+                    name="arquivoPdf"
+                    onChange={handleOrcamentoChange}
+                    accept=".pdf"
+                  />
+                </div>
+
+                <div className="form-group full-width">
+                  <div className="estruturas-header">
+                    <label>Estruturas / Reservatórios</label>
+                    <button
+                      type="button"
+                      className="btn-add-estrutura"
+                      onClick={handleAddEstrutura}
+                    >
+                      + Adicionar
+                    </button>
+                  </div>
+                  <div className="estruturas-container">
+                    {estruturas.map((estrutura) => (
+                      <div key={estrutura.id} className="estrutura-item">
+                        <div className="estrutura-row">
+                          <input
+                            type="text"
+                            placeholder="Tipo (INF/SUP/COI...)"
+                            value={estrutura.tipo}
+                            onChange={(e) => handleEstruturaChange(estrutura.id, 'tipo', e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Descrição"
+                            value={estrutura.descricao}
+                            onChange={(e) => handleEstruturaChange(estrutura.id, 'descricao', e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Capacidade em Litros"
+                            value={estrutura.capacidade}
+                            onChange={(e) => handleEstruturaChange(estrutura.id, 'capacidade', e.target.value)}
+                          />
+                          <input
+                            type="text"
+                            placeholder="Quantidade de Relatórios"
+                            value={estrutura.relatorios}
+                            onChange={(e) => handleEstruturaChange(estrutura.id, 'relatorios', e.target.value)}
+                          />
+                          <button
+                            type="button"
+                            className="btn-remove-estrutura"
+                            onClick={() => handleRemoveEstrutura(estrutura.id)}
+                          >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="3 6 5 6 21 6"></polyline>
+                              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="form-group full-width">
+                  <label htmlFor="observacoes">Observações</label>
+                  <textarea
+                    id="observacoes"
+                    name="observacoes"
+                    value={orcamentoData.observacoes}
+                    onChange={handleOrcamentoChange}
+                    rows="4"
+                  ></textarea>
+                </div>
+              </div>
+
+              <div className="form-actions">
+                <button type="button" className="btn-cancelar" onClick={handleCancelarOrcamento}>Cancelar</button>
+                <button type="submit" className="btn-criar">Criar Orçamento</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Clientes;

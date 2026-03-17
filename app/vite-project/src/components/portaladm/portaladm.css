@@ -1,0 +1,1443 @@
+/* Sistema Operacional TOP LIMP - Design Corporativo Profissional */
+.portaladm-container {
+  min-height: 100vh;
+  background: #f8f9fa;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: #5d6166;
+}
+
+/* Header Corporativo */
+.portaladm-header {
+  background: #0970c4;
+  color: #ffffff;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid #1973b4;
+}
+
+.portaladm-logo {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.portaladm-logo-img {
+  height: 80px;
+  width: auto;
+  background: #ffffff;
+  border-radius: 90%;
+  padding: 8px;
+}
+
+.portaladm-logo h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+}
+
+.system-subtitle {
+  font-size: 0.75rem;
+  color: #a0aec0;
+  font-weight: 400;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.portaladm-user {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.portaladm-user span {
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: #e2e8f0;
+}
+
+.portaladm-logout {
+  background: #c00808fb;
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+}
+
+.portaladm-logout:hover {
+  background: #c53030;
+  transform: translateY(-1px);
+}
+
+/* Layout Principal */
+.portaladm-layout {
+  min-height: calc(100vh - 70px);
+  position: relative;
+}
+
+/* Menu Lateral Corporativo */
+.portaladm-sidebar {
+  width: 260px;
+  background: #0c66b9;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  position: fixed;
+  top: 80px;
+  left: 0;
+  height: calc(100vh - 70px);
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.menu-toggle {
+  display: none;
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: #8c9fc0;
+  color: white;
+  border: none;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  font-size: 1rem;
+  z-index: 10;
+}
+
+.menu-content {
+  padding: 1.5rem 0;
+}
+
+.menu-item {
+  width: 100%;
+  padding: 0.875rem 1.5rem;
+  border: none;
+  background: none;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  font-size: 0.875rem;
+  color: #ffffff;
+  border-left: transparent;
+  border-radius: 1px;
+}
+
+.menu-item:hover {
+  background: #ffffff;
+  color: #0c66b9;
+}
+
+.menu-item.active {
+  background: #4299e1;
+  color: #ffffff;
+  border-left-color: #ffffff;
+  font-weight: 500;
+}
+
+.menu-icon {
+  font-size: 1.1rem;
+  width: 20px;
+  text-align: center;
+  opacity: 0.8;
+}
+
+.menu-item.active .menu-icon {
+  opacity: 1;
+}
+
+.menu-label {
+  flex: 1;
+  font-weight: 400;
+}
+
+/* Conteúdo Principal */
+.portaladm-main {
+  width: calc(100% - 260px);
+  padding: 2rem;
+  background: #f8f9fa;
+  overflow-y: auto;
+  min-height: calc(100vh - 70px);
+  position: absolute;
+  left: 260px;
+  top: 0;
+}
+
+.portaladm-content {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Default Module */
+.portaladm-default {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.portaladm-default h2 {
+  font-size: 1.75rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.portaladm-default p {
+  color: #718096;
+  font-size: 1rem;
+}
+
+/* Responsive Design Corporativo */
+@media (max-width: 1024px) {
+  .portaladm-sidebar {
+    position: fixed;
+    left: -260px;
+    top: 70px;
+    height: calc(100vh - 70px);
+    z-index: 999;
+    transition: left 0.3s ease;
+  }
+  
+  .portaladm-sidebar.open {
+    left: 0;
+  }
+  
+  .portaladm-main {
+    width: 100%;
+    left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .portaladm-header {
+    padding: 0.75rem 1rem;
+  }
+  
+  .portaladm-logo h1 {
+    font-size: 1.25rem;
+  }
+  
+  .system-subtitle {
+    display: none;
+  }
+  
+  .portaladm-sidebar {
+    width: 100%;
+    left: -100%;
+  }
+  
+  .portaladm-sidebar.open {
+    left: 0;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }
+}
+
+.filter-input,
+.filter-select {
+  padding: 0.625rem 0.875rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.875rem;
+  color: #2d3748;
+}
+
+.filter-input:focus,
+.filter-select:focus {
+  outline: none;
+  border-color: #3182ce;
+  box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+.filter-select {
+  min-width: 160px;
+}
+
+/* Tables Corporativas */
+.clientes-table,
+.servicos-table,
+.colaboradores-table {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.clientes-table table,
+.servicos-table table,
+.colaboradores-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.clientes-table th,
+.servicos-table th,
+.colaboradores-table th {
+  background: #f7fafc;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.clientes-table td,
+.servicos-table td,
+.colaboradores-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f7fafc;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.status-ativo {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-avencer {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-vencido {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-apto {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-inapto {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-bloqueado {
+  background: #e2e8f0;
+  color: #2d3748;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  color: #4a5568;
+}
+
+.btn-action:hover {
+  background: #f7fafc;
+  color: #2d3748;
+}
+
+/* Stats Corporativas */
+.servicos-stats,
+.colaboradores-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.stat-box {
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.stat-box:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.stat-number {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.5rem;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.875rem;
+  color: #4a5568;
+  font-weight: 500;
+}
+
+/* Agenda Module Corporativo */
+.agenda-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.agenda-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.agenda-period {
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.875rem;
+}
+
+.btn-nav {
+  background: #ffffff;
+  border: 1px solid #cbd5e0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.btn-nav:hover {
+  background: #f7fafc;
+  border-color: #a0aec0;
+}
+
+.agenda-views {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btn-view {
+  background: #ffffff;
+  border: 1px solid #cbd5e0;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.btn-view.active {
+  background: #4299e1;
+  color: white;
+  border-color: #4299e1;
+}
+
+.agenda-calendar {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.calendar-header {
+  background: #f7fafc;
+  padding: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.calendar-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+  text-align: center;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.calendar-body {
+  padding: 1rem;
+}
+
+.calendar-day {
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: white;
+  transition: all 0.2s ease;
+}
+
+.calendar-day:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.day-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #f7fafc;
+}
+
+.day-date {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.day-month {
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.day-services {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.service-item {
+  background: #f7fafc;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  border: 1px solid #e2e8f0;
+}
+
+.service-time {
+  font-weight: 600;
+  color: #2d3748;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.service-client {
+  color: #4a5568;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.service-type {
+  color: #718096;
+  font-size: 0.75rem;
+}
+
+/* RH/DP Module */
+.portaladm-rhdp h2,
+.portaladm-ssma h2,
+.portaladm-escalas h2,
+.portaladm-equipes h2,
+.portaladm-veiculos h2,
+.portaladm-documentos h2,
+.portaladm-relatorios h2,
+.portaladm-configuracoes h2 {
+  font-size: 1.5rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.rhdp-actions,
+.ssma-actions,
+.escalas-actions,
+.equipes-actions,
+.veiculos-actions,
+.documentos-actions,
+.relatorios-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.rhdp-filters,
+.ssma-filters,
+.escalas-filters,
+.equipes-filters,
+.veiculos-filters,
+.documentos-filters,
+.relatorios-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.rhdp-table,
+.ssma-table,
+.escalas-table {
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+}
+
+.rhdp-table table,
+.ssma-table table,
+.escalas-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rhdp-table th,
+.ssma-table th,
+.escalas-table th {
+  background: #f7fafc;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.rhdp-table td,
+.ssma-table td,
+.escalas-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f7fafc;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.rhdp-stats,
+.ssma-stats,
+.escalas-stats,
+.equipes-stats,
+.veiculos-stats,
+.documentos-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+/* SSMA Cards */
+.ssma-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.ssma-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.ssma-card h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.ssma-card-content {
+  margin-bottom: 1rem;
+}
+
+.document-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.doc-name {
+  flex: 1;
+  font-weight: 500;
+  color: #2d3748;
+}
+
+.doc-date {
+  font-size: 0.875rem;
+  color: #718096;
+}
+
+.ssma-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+}
+
+.ssma-stat {
+  text-align: center;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 6px;
+  border: 1px solid #e2e8f0;
+}
+
+/* Escalas Calendar */
+.escalas-calendar {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.escalas-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.escalas-header h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  font-weight: 600;
+}
+
+.escalas-legend {
+  display: flex;
+  gap: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.legend-color.trabalho {
+  background: #e2e8f0;
+}
+
+.legend-color.folga {
+  background: #f0f4f8;
+}
+
+.legend-color.ferias {
+  background: #fef5e7;
+}
+
+.escalas-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.escalas-week {
+  background: #f8fafc;
+  border-radius: 8px;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.week-header {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.escalas-days {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.5rem;
+}
+
+.day-cell {
+  text-align: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border: 1px solid #e2e8f0;
+}
+
+.day-cell.trabalho {
+  background: #e2e8f0;
+  color: #2d3748;
+}
+
+.day-cell.folga {
+  background: #f0f4f8;
+  color: #2d3748;
+}
+
+.day-cell.ferias {
+  background: #fef5e7;
+  color: #2d3748;
+}
+
+/* Equipes Grid */
+.equipes-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.equipe-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.equipe-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.equipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.equipe-header h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin: 0;
+}
+
+.equipe-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.equipe-info {
+  margin-bottom: 1rem;
+}
+
+.equipe-info div {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.equipe-info strong {
+  color: #2d3748;
+}
+
+.equipe-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Veículos Grid */
+.veiculos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.veiculo-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.veiculo-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.veiculo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.veiculo-header h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin: 0;
+}
+
+.veiculo-status {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.veiculo-info {
+  margin-bottom: 1rem;
+}
+
+.veiculo-detalhe {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+.veiculo-detalhe strong {
+  color: #2d3748;
+}
+
+.veiculo-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Documentos Browser */
+.documentos-browser {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 1.5rem;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 2rem;
+}
+
+.documentos-sidebar {
+  border-right: 1px solid #e2e8f0;
+  padding-right: 1.5rem;
+}
+
+.documentos-tree {
+  font-size: 0.875rem;
+}
+
+.tree-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tree-item:hover {
+  background: #f8fafc;
+}
+
+.tree-children {
+  margin-left: 1.5rem;
+  padding-left: 1rem;
+  border-left: 1px solid #e2e8f0;
+}
+
+.tree-icon {
+  font-size: 1rem;
+}
+
+.tree-label {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.documentos-content {
+  padding-left: 1.5rem;
+}
+
+.documentos-toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.documentos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.document-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #f8fafc;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.document-item:hover {
+  background: #e2e8f0;
+  transform: translateY(-2px);
+}
+
+.document-icon {
+  font-size: 2rem;
+  color: #4a5568;
+}
+
+.document-info {
+  flex: 1;
+}
+
+.document-name {
+  font-weight: 600;
+  color: #2d3748;
+  margin-bottom: 0.25rem;
+}
+
+.document-meta {
+  font-size: 0.75rem;
+  color: #718096;
+}
+
+.document-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Relatórios Grid */
+.relatorios-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.relatorio-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+  transition: all 0.2s ease;
+}
+
+.relatorio-card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
+  transform: translateY(-2px);
+}
+
+.relatorio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.relatorio-header h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  font-weight: 600;
+  margin: 0;
+}
+
+.relatorio-badge {
+  background: #e2e8f0;
+  color: #4a5568;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.relatorio-info {
+  margin-bottom: 1rem;
+}
+
+.relatorio-stats {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.relatorio-stat {
+  text-align: center;
+  flex: 1;
+}
+
+.relatorio-stat .stat-number {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 0.25rem;
+}
+
+.relatorio-stat .stat-label {
+  font-size: 0.75rem;
+  color: #718096;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.relatorio-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #718096;
+  padding-top: 0.75rem;
+  border-top: 1px solid #f7fafc;
+}
+
+.relatorio-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.relatorios-schedule {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.relatorios-schedule h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.schedule-table {
+  overflow-x: auto;
+}
+
+.schedule-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schedule-table th {
+  background: #f7fafc;
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #2d3748;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.schedule-table td {
+  padding: 1rem;
+  border-bottom: 1px solid #f7fafc;
+  font-size: 0.875rem;
+  color: #4a5568;
+}
+
+/* Configurações */
+.configuracoes-tabs {
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+}
+
+.config-tabs {
+  display: flex;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 0 1.5rem;
+}
+
+.config-tab {
+  background: none;
+  border: none;
+  padding: 1rem 1.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: #718096;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.config-tab:hover {
+  color: #4a5568;
+  background: #f8fafc;
+}
+
+.config-tab.active {
+  color: #4299e1;
+  border-bottom-color: #4299e1;
+  font-weight: 600;
+}
+
+.config-content {
+  padding: 2rem;
+}
+
+.config-section {
+  margin-bottom: 2rem;
+}
+
+.config-section h3 {
+  font-size: 1.125rem;
+  color: #2d3748;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
+}
+
+.config-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-size: 0.875rem;
+  color: #4a5568;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.config-input,
+.config-select,
+.config-textarea {
+  padding: 0.75rem;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  background: white;
+  font-size: 0.875rem;
+  color: #2d3748;
+}
+
+.config-input:focus,
+.config-select:focus,
+.config-textarea:focus {
+  outline: none;
+  border-color: #4299e1;
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.config-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.config-actions {
+  display: flex;
+  gap: 1rem;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+/* Default Module */
+.portaladm-default {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.portaladm-default h2 {
+  font-size: 1.75rem;
+  color: #2d3748;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.portaladm-default p {
+  color: #718096;
+  font-size: 1rem;
+}
+
+/* Responsive Design Corporativo */
+@media (max-width: 1024px) {
+  .portaladm-sidebar {
+    position: fixed;
+    left: -260px;
+    top: 70px;
+    height: calc(100vh - 70px);
+    z-index: 999;
+  }
+
+  .portaladm-sidebar.open {
+    left: 0;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  .portaladm-main {
+    margin-left: 0;
+  }
+
+  .critical-cards,
+  .operational-cards {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+
+  .agenda-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 768px) {
+  .portaladm-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .portaladm-logo h1 {
+    font-size: 1.25rem;
+  }
+
+  .system-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .portaladm-main {
+    padding: 1rem;
+  }
+
+  .clientes-actions,
+  .servicos-filters,
+  .agenda-filters {
+    flex-direction: column;
+  }
+
+  .agenda-table {
+    overflow-x: auto;
+  }
+
+  .servicos-stats,
+  .colaboradores-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .portaladm-header {
+    padding: 0.75rem;
+  }
+
+  .portaladm-logo-img {
+    height: 32px;
+  }
+
+  .portaladm-logo h1 {
+    font-size: 1.125rem;
+  }
+
+  .critical-cards,
+  .operational-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .servicos-stats,
+  .colaboradores-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .calendar-days {
+    font-size: 0.75rem;
+  }
+
+  .day-header {
+    flex-direction: column;
+    text-align: center;
+  }
+}
