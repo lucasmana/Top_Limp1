@@ -1,0 +1,187 @@
+.corporativo-section {
+  background-color: #0a2540;
+  padding: 60px ;
+  margin-top: 0; /* remove o valor negativo */
+  width: 100%;
+  position: relative; /* fixa no fluxo normal */
+  z-index: 1;
+}
+
+.corporativo-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.corporativo-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.corporativo-title {
+  font-family: "Poppins", sans-serif;
+  position: relative;
+  top: -60px;
+  left: -13%;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.corporativo-description {
+  font-size: 1.2rem;
+  line-height: 1.6;
+  margin-bottom: 50px;
+  color: #e0e0e0;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.corporativo-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+  margin-top: 40px;
+}
+
+/* Organiza a sidebar inteira */
+.corporativo-sidebar {
+  display: flex;
+  align-items: flex-start;
+  gap: 30px; /* espaço entre barras e textos */
+}
+
+/* Container das barras */
+.corporativo-bars {
+  position: relative;
+  flex-direction:row;
+  display: inline-flex;
+  gap: 20px; /* agora o gap funciona */
+  z-index: 10; /* acima dos itens */
+}
+
+/* Cada barra */
+.corporativo-bar {
+  width: 8px;
+  height: 90px;
+  background-color: #f18118;
+  border-radius: 30px;
+  
+  position: relative; /* permite controle de posição */
+  margin: 0; /* remove espaços extras */
+  padding: 0; /* remove espaços extras */
+}
+
+/* Textos ao lado direito */
+.corporativo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 25px; /* mesma distância das barras */
+}
+
+.corporativo-text p {
+  margin: 0;
+  height: 70px; /* mesma altura da barra */
+  display: flex;
+  align-items: flex-start; /* alinha no topo */
+  font-weight: 500;
+  font-size: 0.9rem; /* texto um pouco maior */
+  line-height: 1.3; /* espaçamento melhor */
+  text-align: left; /* alinhamento à esquerda */
+  flex-direction: column; /* permite quebra de linha */
+  justify-content: flex-start; /* começa do topo */
+  font-family: "Poppins", sans-serif; /* fonte consistente */
+  letter-spacing: 0.3px; /* espaçamento entre letras */
+  color: #ffffff; /* branco mais puro */
+}
+
+
+.corporativo-bar-1 { height: 85px; position: relative; top: 150px; transform: translateX(-56.1rem); }
+.corporativo-bar-2 { height: 85px; position: relative; top: 150px; transform: translateX(-30.8rem); }
+.corporativo-bar-3 { height: 85px; position: relative; top: 150px; transform: translateX(-6.5rem); }
+.corporativo-bar-4 { height: 85px; position: relative; top: 150px; transform: translateX(17.5rem); }
+
+.corporativo-text-1 { font-weight: 700; position: relative; top: 165px; transform: translateX(-62.5rem); }
+.corporativo-text-2 { font-weight: 700; position: relative; top: 70px; transform: translateX(-35.6rem); }
+.corporativo-text-3 { font-weight: 700; position: relative; top: -25px; transform: translateX(-9.4rem); }
+.corporativo-text-4 { font-weight: 700; position: relative; top: -120px; transform: translateX(16.3rem); }
+
+
+.corporativo-item {
+  background-color:rgb(11, 115, 250) ;
+  position: relative;
+  top: -40px;
+  right: 29%;
+  border-radius: 0px;
+  height: 195px;
+  width: 98em;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  z-index: -10;
+}
+
+
+.corporativo-item h3 {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #4a9eff;
+}
+
+.corporativo-item p {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: #cccccc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .corporativo-section {
+    padding: 40px 0;
+  }
+  
+  .corporativo-title {
+    font-size: 2.2rem;
+  }
+  
+  .corporativo-description {
+    font-size: 1.1rem;
+  }
+  
+  .corporativo-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .corporativo-item {
+    padding: 25px;
+  }
+}
+
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

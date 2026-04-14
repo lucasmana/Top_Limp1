@@ -1,0 +1,801 @@
+/* Overlay para janela flutuante de relatório */
+
+.relatorio-overlay {
+
+  position: fixed;
+
+  top: 0;
+
+  left: 0;
+
+  right: 0;
+
+  bottom: 0;
+
+  background: rgba(0, 0, 0, 0.5);
+
+  backdrop-filter: blur(5px);
+
+  z-index: 1000;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+}
+
+
+
+/* Modal do relatório */
+
+.relatorio-modal {
+
+  background: white;
+
+  border-radius: 12px;
+
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+
+  max-width: 1200px;
+
+  width: 40%;
+
+  max-height: 80vh;
+
+  height: auto;
+
+  overflow-y: auto;
+
+  position: relative;
+
+}
+
+
+
+/* Cabeçalho do relatório */
+
+.relatorio-header {
+
+  display: flex;
+
+  justify-content: space-between;
+
+  align-items: center;
+
+  padding: 1.5rem;
+
+  border-bottom: 2px solid #e2e8f0;
+
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+
+  border-radius: 12px 12px 0 0;
+
+}
+
+
+
+.relatorio-header h2 {
+
+  margin: 0;
+
+  font-size: 1.5rem;
+
+  font-weight: 700;
+
+  color: #1e293b;
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+}
+
+
+
+.relatorio-header h2::before {
+
+  content: "";
+
+}
+
+
+
+.btn-fechar {
+
+  background: none;
+
+  border: none;
+
+  font-size: 1.5rem;
+
+  cursor: pointer;
+
+  color: #718096;
+
+  transition: all 0.2s ease;
+
+}
+
+
+
+.btn-fechar:hover {
+
+  background: #f7fafc;
+
+  color: #2d3748;
+
+}
+
+
+
+/* Corpo do relatório com layout vertical */
+
+.relatorio-body {
+
+  display: flex;
+
+  flex-direction: column;  
+
+  min-height: 500px;
+
+}
+
+
+
+.relatorio-sidebar {
+
+  border-right: 2px solid #e2e8f0;
+
+  padding: 1.5rem;
+
+  overflow-y: auto;
+
+}
+
+
+
+.campos-selecao h3 {
+
+  color: #1e293b;
+
+  font-size: 1.1rem;
+
+  font-weight: 600;
+
+  margin-bottom: 1rem;
+
+  margin-top: 0;
+
+}
+
+
+
+.campos-grupo {
+
+  display: grid;
+
+  grid-template-columns: repeat(2, 1fr);
+
+  gap: 0.0.1rem;
+
+  max-height: 60vh;
+
+  overflow-y: auto;
+
+  padding: 0.1rem;
+
+}
+
+
+
+.campo-checkbox {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.4rem;
+
+  cursor: pointer;
+
+  padding: 0.4rem 0.6rem;
+
+  border-radius: 6px;
+
+  transition: background-color 0.2s ease;
+
+  font-size: 0.85rem;
+
+  line-height: 1.2;
+
+}
+
+
+
+.campo-checkbox:hover {
+
+  background-color: #f1f5f9;
+
+}
+
+
+
+.campo-checkbox input[type="checkbox"] {
+
+  width: 16px;
+
+  height: 16px;
+
+  cursor: pointer;
+
+  accent-color: #3b82f6;
+
+}
+
+
+
+.campo-checkbox span {
+
+  font-size: 0.9rem;
+
+  color: #4a5568;
+
+  user-select: none;
+
+}
+
+
+
+.campos-acoes {
+
+  display: flex;
+
+  gap: 0.5rem;
+
+  margin-top: 1.5rem;
+
+  padding-top: 1rem;
+
+  border-top: 1px solid #e2e8f0;
+
+}
+
+
+
+.btn-selecionar-todos, .btn-desselecionar-todos {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  padding: 0.5rem 1rem;
+
+  border: none;
+
+  border-radius: 6px;
+
+  font-size: 0.85rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  flex: 1;
+
+  justify-content: center;
+
+}
+
+
+
+.btn-selecionar-todos {
+
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+
+  color: white;
+
+}
+
+
+
+.btn-desselecionar-todos {
+
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+
+  color: white;
+
+}
+
+
+
+.btn-selecionar-todos:hover, .btn-desselecionar-todos:hover {
+
+  transform: translateY(-1px);
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+
+
+/* Conteúdo do relatório */
+
+.relatorio-content {
+
+  flex: 1;
+
+  padding: 0;  
+
+  overflow-y: auto;
+
+  max-height: 70vh;
+
+  display: block;
+
+  border: 2px solid #3b82f6;  
+
+  border-radius: 8px;
+
+  background: white;
+
+  margin: 2rem;  
+
+}
+
+
+
+.relatorio-content::before {
+  display: none;
+  content: none;
+
+}
+
+.relatorio-print-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #3b82f6;
+  color: white;
+  padding: 0.75rem 1rem;
+  border-radius: 8px 8px 0 0;
+}
+
+.relatorio-print-header img {
+  height: 34px;
+  width: auto;
+  display: block;
+}
+
+.relatorio-print-header h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+}
+
+.relatorio-content.relatorio-export .relatorio-print-header {
+  background: #ffffff;
+  color: #000000;
+}
+
+.relatorio-content.relatorio-export .relatorio-print-header h2 {
+  color: #000000;
+}
+
+.relatorio-grid {
+  display: grid;
+  grid-template-columns: repeat(24, 1fr);
+  gap: 0.6rem 0.9rem;
+  padding: 1rem;
+  align-items: start;
+}
+
+.relatorio-col {
+  grid-column: span 12;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+
+
+.relatorio-field {
+  padding: 0.35rem 0.25rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+
+
+.relatorio-field:last-child {
+
+  border-bottom: none;
+
+}
+
+
+
+.relatorio-field p {
+
+  margin: 0.18rem 0;
+
+  font-size: 0.9rem;
+
+  line-height: 1.4;
+
+}
+
+
+
+.relatorio-field p:first-child {
+
+  font-weight: 600;
+
+  color: #1e293b;
+
+  margin-bottom: 0.15rem;
+
+  min-width: 150px;
+
+}
+
+
+
+.relatorio-field p:nth-child(2) {
+
+  color: #4a5568;
+
+  margin-bottom: 0.3rem;
+
+}
+
+
+
+.relatorio-field p:nth-child(3),
+.relatorio-field p:nth-child(4),
+.relatorio-field p:nth-child(5) {
+
+  color: #4a5568;
+
+  margin-bottom: 0.3rem;
+
+  margin-left: 0.5rem;
+
+}
+
+
+
+.relatorio-section {
+
+  margin-bottom: 2rem;
+
+  background: white;
+
+  border-radius: 8px;
+
+  padding: 1rem;
+
+  border: 1px solid #e2e8f0;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+}
+
+
+
+.relatorio-section h3 {
+
+  color: #1e293b;
+
+  font-size: 1.25rem;
+
+  font-weight: 600;
+
+  margin-bottom: 1rem;
+
+  padding-bottom: 0.5rem;
+
+  border-bottom: 2px solid #e2e8f0;
+
+}
+
+
+
+.relatorio-field {
+
+  display: flex;
+
+  margin-bottom: 0.75rem;
+
+  align-items: center;
+
+}
+
+
+
+.relatorio-field .label {
+
+  font-weight: 600;
+
+  color: #4a5568;
+
+  min-width: 150px;
+
+  font-size: 0.95rem;
+
+}
+
+
+
+.relatorio-field .value {
+
+  color: #2d3748;
+
+  font-size: 0.95rem;
+
+  flex: 1;
+
+  padding: 0.5rem;
+
+  background: #f8fafc;
+
+  border-radius: 6px;
+
+  border: 1px solid #e2e8f0;
+
+}
+
+
+
+/* Tabela de datas */
+
+.datas-table {
+
+  width: 100%;
+
+  border-collapse: collapse;
+
+  margin-top: 1rem;
+
+  background: white;
+
+  border-radius: 8px;
+
+  overflow: hidden;
+
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+
+
+.datas-table th {
+
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+
+  color: white;
+
+  padding: 1rem;
+
+  text-align: left;
+
+  font-weight: 600;
+
+  font-size: 0.875rem;
+
+}
+
+
+
+.datas-table td {
+
+  padding: 0.75rem 1rem;
+
+  border-bottom: 1px solid #e2e8f0;
+
+  font-size: 0.9rem;
+
+}
+
+
+
+.datas-table tr:last-child td {
+
+  border-bottom: none;
+
+}
+
+
+
+.datas-table tr:hover {
+
+  background: #f8fafc;
+
+}
+
+
+
+/* Ações do relatório - no corpo */
+
+.relatorio-actions {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 1rem;
+
+  padding: 0.5rem 2rem 1rem;
+
+  background: white;
+
+  border-top: none;
+
+  border-radius: 0;
+
+}
+
+
+
+.btn-imprimir {
+  background: #3b82f6 !important;
+  border-color: #3b82f6 !important; 
+  color: #ffffff!important; 
+  font-weight: 400 !important; 
+  font-size: 0.9rem !important;
+  width: 200px !important;
+  height: 34px !important;
+  position: relative;
+  bottom: 1.5rem;
+  left: 14rem;
+}
+
+.btn-imprimir:hover {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+}
+
+.btn-imprimir, .btn-download {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 0.5rem;
+
+  padding: 0.75rem 1.5rem;
+
+  border: 1px solid #e2e8f0;
+
+  border-radius: 8px;
+
+  font-size: 1rem;
+
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: all 0.3s ease;
+
+  background: white;
+
+  color: #4a5568;
+
+}
+
+
+
+.btn-download:hover {
+
+  border-color: #d1d5db;
+
+  color: #2d3748;
+
+}
+
+
+
+/* Estilos para impressão */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    width: 210mm;
+    height: 297mm;
+    overflow: hidden;
+  }
+
+  * {
+    visibility: hidden !important;
+    box-shadow: none !important;
+  }
+
+  .relatorio-content,
+  .relatorio-content * {
+    visibility: visible !important;
+  }
+
+  .relatorio-content::before,
+  .relatorio-content::after {
+    display: none !important;
+    content: none !important;
+  }
+
+  .relatorio-content {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 210mm !important;
+    height: 297mm !important;
+    margin: 0 !important;
+    padding: 6mm !important;
+    overflow: hidden !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: white !important;
+    max-width: none !important;
+    max-height: none !important;
+    display: block !important;
+  }
+
+  .relatorio-print-header {
+    background: #ffffff !important;
+    color: #000000 !important;
+    border-radius: 0 !important;
+    padding: 3mm 4mm !important;
+  }
+
+  .relatorio-print-header h2 {
+    color: #000000 !important;
+  }
+
+  .relatorio-print-header,
+  .relatorio-grid,
+  .relatorio-col,
+  .relatorio-field,
+  .relatorio-field * {
+    break-inside: avoid !important;
+    page-break-inside: avoid !important;
+  }
+
+  .relatorio-grid {
+    padding: 3mm 0 0 0 !important;
+    gap: 2mm 4mm !important;
+  }
+
+  .relatorio-col {
+    gap: 1.5mm !important;
+  }
+
+  .relatorio-field {
+    padding: 1mm 0 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+  }
+
+  .relatorio-field p {
+    font-size: 8px !important;
+    line-height: 1.15 !important;
+    margin: 0 !important;
+    color: #111827 !important;
+  }
+}
+

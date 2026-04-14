@@ -1,0 +1,17 @@
+# Ignora todos os node_modules
+node_modules/
+**/node_modules/
+
+# Ignora pastas de build e logs
+dist/
+build/
+*.log
+.DS_Store
+
+# Ignora pastas de sistema e IDE
+.vscode/
+.idea/
+
+# Ignora arquivos sensíveis e uploads
+.env
+uploads/

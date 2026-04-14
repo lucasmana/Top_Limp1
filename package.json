@@ -7,13 +7,14 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "dev:frontend": "cd ./app/vite-project && npm run dev",
-    "dev:backend": "nodemon ./server.js",
+    "dev:backend": "nodemon server.js",
     "dev:all": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
     "start:all": "concurrently \"npm start\" \"npm run dev:frontend\"",
     "install:backend": "npm install",
     "install:frontend": "cd ./app/vite-project && npm install",
     "install:all": "npm run install:backend && npm run install:frontend",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node --test",
+    "verify:servicos": "node scripts/verify-servicos-fetch.mjs"
   },
   "keywords": [
     "fullstack",
@@ -24,7 +25,18 @@
   ],
   "author": "",
   "license": "ISC",
+  "dependencies": {
+    "concurrently": "^9.2.1",
+    "express": "^4.21.2",
+    "express-fileupload": "^1.5.2",
+    "mongoose": "^8.12.1",
+    "nodemon": "^3.1.9"
+  },
   "devDependencies": {
     "concurrently": "^9.2.1"
-  }
+  },
+  "workspaces": [
+    "backend",
+    "app/vite-project"
+  ]
 }

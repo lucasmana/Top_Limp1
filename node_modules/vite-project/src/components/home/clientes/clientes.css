@@ -1,0 +1,220 @@
+/* Section de Clientes */
+.clientes-section {
+  background-color: #a39e9e7e; /* cinza clara */
+  padding: 80px 0;
+  height: 30em;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.clientes-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  text-align: center;
+}
+
+/* titulo Clentes  */
+.clientes-title {
+  font-family: "Poppins", sans-serif;
+  position: relative;
+  top: -30px;
+  left: -24%;
+  transform: translateX(-50%);
+  font-size: 3.3rem;
+  font-weight: 700;
+  margin-bottom: 50px;
+  color: #0D77CE;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section-visible .clientes-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Fila horizontal de logos */
+.clientes-fila-horizontal {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  background-color: white;
+  border-radius: 15px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 40px 20px;
+  overflow: hidden;
+}
+
+/* fila clientes */
+.clientes-logos-fila {
+  display: flex;
+  gap: 30px;
+  position: relative;
+  left: -90.7%;
+  margin-top: -1%;
+  
+  transition: transform 1s ease-in-out;
+}
+
+.cliente-logo-circular {
+  border-radius: 50%;
+  background-color:#a39e9e7e; /* cinza clara */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: transform 0.3 ease, box-shadow 0.3s ease, border-color 0.3s ease;
+  flex-shrink: 0;
+}
+
+.cliente-logo-circular:hover {
+  transform: scale(1.1);
+  box-shadow: 0 8px 24px rgba(13, 110, 253, 0.2);
+  border-color: #0D77CE;
+}
+
+.cliente-logo-img {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.cliente-logo-circular:hover .cliente-logo-img {
+  transform: scale(1.05);
+}
+
+/* Setas de navegação */
+.clientes-seta {
+  position: absolute;
+  top: 55%;
+  transform: translateY(-50%);
+  background:#a39e9e7e; /* cinza clara */
+  color: white;
+  border: none;
+  font-size: 28px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.clientes-seta:hover {
+  background: #a39e9e7e; /* cinza clara */
+  transform: translateY(-50%) scale(1.2);
+  border: none;
+}
+
+.clientes-seta-esquerda {
+  left: 20px;
+}
+
+.clientes-seta-direita {
+  right: 20px;
+}
+
+/* Animação de entrada */
+.section-visible .clientes-fila-horizontal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideUp 0.8s ease forwards;
+}
+
+@keyframes slideUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .clientes-section {
+    padding: 60px 0;
+  }
+  
+  .clientes-title {
+    font-size: 2rem;
+    margin-bottom: 40px;
+  }
+  
+  .clientes-fila-horizontal {
+    padding: 30px 15px;
+    gap: 15px;
+  }
+  
+  .cliente-logo-circular {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .cliente-logo-img {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .clientes-seta {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .clientes-seta-esquerda {
+    left: 10px;
+  }
+  
+  .clientes-seta-direita {
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .clientes-container {
+    padding: 0 15px;
+  }
+  
+  .cliente-logo-circular {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .cliente-logo-img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+/* IMAGEM AMPLIADA (ADICIONADO) */
+
+.clientes-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.clientes-img-ampliada {
+  width: 400px;
+  max-width: 80%;
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.4);
+}
