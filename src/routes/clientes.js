@@ -94,13 +94,13 @@ router.delete('/clientes/:id', async (req, res) => {
     const cliente = await Cliente.findByIdAndDelete(req.params.id);
     
     if (!cliente) {
-      return res.status(404).json({ error: 'Cliente não encontrado' });
+      return res.status(404).json({ success: false, message: 'Cliente não encontrado' });
     }
     
-    res.json({ message: 'Cliente deletado com sucesso' });
+    res.json({ success: true, message: 'Cliente deletado com sucesso' });
   } catch (error) {
     console.error('Erro ao deletar cliente:', error);
-    res.status(500).json({ error: 'Erro ao deletar cliente' });
+    res.status(500).json({ success: false, message: 'Erro ao deletar cliente' });
   }
 });
 

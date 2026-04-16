@@ -1,0 +1,120 @@
+/* Section de Bolhas */
+.bolhas-section {
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  padding:  0;
+  opacity: 0;
+  transform: translateY(50px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.section-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bolhas-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+}
+
+.bolhas-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.bolhas-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bolhas-content {
+  text-align: center;
+  color: white;
+  max-width: 800px;
+  padding: 0 20px;
+}
+
+.bolhas-title {
+  font-family: "Poppins", sans-serif;
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.section-visible .bolhas-title {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.bolhas-description {
+  font-family: "Poppins", sans-serif;
+  font-size: 1.2rem;
+  line-height: 1.6;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+  transition-delay: 0.3s;
+}
+
+.section-visible .bolhas-description {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .bolhas-section {
+    padding: 60px 0;
+  }
+  
+  .bolhas-container {
+    height: 300px;
+  }
+  
+  .bolhas-title {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+  }
+  
+  .bolhas-description {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .bolhas-section {
+    padding: 40px 0;
+  }
+  
+  .bolhas-container {
+    height: 250px;
+  }
+  
+  .bolhas-title {
+    font-size: 2rem;
+  }
+  
+  .bolhas-description {
+    font-size: 1rem;
+  }
+}

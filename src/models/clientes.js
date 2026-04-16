@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
 
+// Conectar ao banco Cadastro para clientes
+const cadastroDB = mongoose.createConnection('mongodb://127.0.0.1:27017/Cadastro');
+
 const ClienteSchema = new mongoose.Schema({
   razaoSocial: {
     type: String,
@@ -77,4 +80,4 @@ const ClienteSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model('clientes', ClienteSchema);
+module.exports = cadastroDB.model('clientes', ClienteSchema, 'clientes');
