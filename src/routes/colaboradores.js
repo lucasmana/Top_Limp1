@@ -20,7 +20,7 @@ const requireWriteAccess = (req, res, next) => {
   }
   next();
 };
-
+x
 const buildQuery = ({ q, status, tipoEscala, diaFolgaSemanal, arquivados }) => {
   const query = {};
 

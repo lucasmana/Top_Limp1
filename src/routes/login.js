@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const Usuario = require('../models/Usuario');
+// const Usuario = require('../models/Usuario'); // Temporariamente desativado para testar
 
 // Rota de teste para login
 router.get('/test', (req, res) => {
@@ -27,6 +27,24 @@ router.post('/login', async (req, res) => {
         ok: false,
         mensagem: 'E-mail e senha são obrigatórios'
       });
+    }
+
+    // Verificar se é o usuário administrativo específico (VERIFICAR PRIMEIRO)
+    if (email === 'ADM0p3rac1onal2026@T0p' && senha === 'T0p') {
+      console.log('Login administrativo detectado:', email);
+
+      res.status(200).json({
+        ok: true,
+        mensagem: 'Login administrativo realizado com sucesso!',
+        usuario: {
+          id: 'admin-operacional',
+          nome: 'Administrador Top Limp',
+          email: email,
+          tipo: 'administrativo',
+          redirect: '/portaladm'
+        }
+      });
+      return;
     }
 
     // Verificar se é o usuário administrativo específico (VERIFICAR PRIMEIRO)
@@ -66,39 +84,12 @@ router.post('/login', async (req, res) => {
     }
 
     // Buscar usuário pelo e-mail (apenas se não for o administrativo)
-    console.log('🔍 Buscando usuário pelo e-mail:', email);
-    const usuario = await Usuario.findOne({ email });
-
-    console.log('📋 Usuário encontrado:', usuario ? 'SIM' : 'NÃO');
-
-    if (!usuario) {
-      console.log('❌ Usuário não encontrado:', email);
-      return res.status(401).json({
-        ok: false,
-        mensagem: 'Usuário não encontrado ou não cadastrado'
-      });
-    }
-
-    // Verificar senha (em produção, usar bcrypt para comparar senhas criptografadas)
-    if (usuario.senha !== senha) {
-      console.log('Senha incorreta para o usuário:', email);
-      return res.status(401).json({
-        ok: false,
-        mensagem: 'Senha incorreta'
-      });
-    }
-
-    console.log('Login realizado com sucesso:', usuario.email);
-
-    res.status(200).json({
-      ok: true,
-      mensagem: 'Login realizado com sucesso!',
-      usuario: {
-        id: usuario._id,
-        nome: usuario.nome,
-        email: usuario.email,
-        cnpj: usuario.cnpj
-      }
+    // Temporariamente desativado para testar
+    console.log('Busca de usuário por e-mail temporariamente desativada');
+    
+    return res.status(401).json({
+      ok: false,
+      mensagem: 'Login por banco de dados temporariamente desativado. Use usuário admin.'
     });
 
   } catch (error) {

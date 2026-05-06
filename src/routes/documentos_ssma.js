@@ -3,13 +3,46 @@ const express = require('express');
 const router = express.Router();
 const path = require('path');
 const fs = require('fs');
+const mongoose = require('mongoose');
 const DocumentoSSMA = require('../models/DocumentoSSMA');
+
+// Importar a conexão do banco para verificar estado
+const colaboradoresDB = mongoose.createConnection('mongodb://127.0.0.1:27017/Colaboradores');
+
+// Eventos de conexão para depuração
+colaboradoresDB.on('connected', () => {
+  console.log('documentos_ssma.js: Conexão MongoDB estabelecida com banco Colaboradores');
+});
+
+colaboradoresDB.on('error', (err) => {
+  console.error('documentos_ssma.js: Erro na conexão MongoDB:', err);
+});
+
+colaboradoresDB.on('disconnected', () => {
+  console.log('documentos_ssma.js: Desconectado do MongoDB');
+});
+
+// Rota de teste para verificar se a API está funcionando
+router.get('/documentos_ssma/test', (req, res) => {
+  console.log('GET /api/documentos_ssma/test - Rota de teste');
+  res.json({
+    success: true,
+    message: 'API Documentos SSMA está funcionando!',
+    timestamp: new Date(),
+    uploadDir: path.join(__dirname, '../../uploads/documentos_ssma')
+  });
+});
 
 // Criar pasta de uploads se não existir
 const uploadDir = path.join(__dirname, '../../uploads/documentos_ssma');
+console.log('Verificando pasta de uploads:', uploadDir);
+
 if (!fs.existsSync(uploadDir)) {
+  console.log('Pasta não existe, criando...');
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log('📁 Pasta de uploads criada:', uploadDir);
+  console.log('Pasta de uploads criada:', uploadDir);
+} else {
+  console.log('Pasta de uploads já existe:', uploadDir);
 }
 
 // Servir arquivos estáticos com caminho absoluto
@@ -60,9 +93,18 @@ router.get('/documentos_ssma/arquivo/:filename', (req, res) => {
 
 // POST - Criar novo documento SSMA
 router.post('/documentos_ssma', async (req, res) => {
+  console.log('=== POST /api/documentos_ssma - FLUXO COMPLETO DE UPLOAD ===');
+  
   try {
-    console.log('📝 Recebendo dados do documento:', req.body);
+    // 1. Verificar se recebeu dados
+    if (!req.body) {
+      console.log('ERRO: Body está vazio');
+      return res.status(400).json({ success: false, message: 'Body está vazio' });
+    }
     
+    console.log('1. Body recebido:', Object.keys(req.body));
+    
+    // 2. Extrair dados do formulário
     const {
       colaboradorId,
       colaboradorNome,
@@ -77,7 +119,9 @@ router.post('/documentos_ssma', async (req, res) => {
       observacoes
     } = req.body;
 
-    // Validar campos obrigatórios
+    console.log('2. Dados extraídos:', { colaboradorId, tipo, nome, temArquivo: !!arquivoBase64 });
+    
+    // 3. Validar campos obrigatórios
     if (!tipo) {
       return res.status(400).json({ 
         success: false, 
@@ -87,8 +131,10 @@ router.post('/documentos_ssma', async (req, res) => {
 
     let arquivoPath = null;
     
-    // Se houver arquivo em base64, salvar no disco
+    // 4. FLUXO DE UPLOAD: Primeiro salvar arquivo na pasta
     if (arquivoBase64 && arquivoNome) {
+      console.log('4. Iniciando upload do arquivo...');
+      
       try {
         // Remover prefixo data:image/...;base64, se existir
         const base64Data = arquivoBase64.replace(/^data:([A-Za-z-+/]+);base64,/, '');
@@ -99,22 +145,30 @@ router.post('/documentos_ssma', async (req, res) => {
         const uniqueFileName = `${colaboradorId}_${timestamp}${extension}`;
         const filePath = path.join(uploadDir, uniqueFileName);
         
+        console.log('5. Caminho do arquivo:', filePath);
+        
         // Salvar arquivo no disco
         fs.writeFileSync(filePath, base64Data, 'base64');
         
         arquivoPath = uniqueFileName;
-        console.log('✅ Arquivo salvo:', filePath);
+        console.log('6. Arquivo salvo com sucesso na pasta:', uniqueFileName);
+        
       } catch (fileError) {
-        console.error('❌ Erro ao salvar arquivo:', fileError);
+        console.error('ERRO ao salvar arquivo:', fileError);
         return res.status(500).json({ 
           success: false, 
-          message: 'Erro ao salvar arquivo' 
+          message: 'Erro ao salvar arquivo no disco',
+          error: fileError.message 
         });
       }
+    } else {
+      console.log('4. Nenhum arquivo para upload (continuando sem arquivo)');
     }
 
-    // Criar documento no banco de dados
-    const novoDocumento = new DocumentoSSMA({
+    // 5. DEPOIS salvar no banco de dados (com o caminho do arquivo)
+    console.log('7. Salvando no banco de dados...');
+    
+    const documentoData = {
       colaboradorId,
       colaboradorNome,
       tipo,
@@ -122,27 +176,37 @@ router.post('/documentos_ssma', async (req, res) => {
       dataRealizacao,
       dataVencimento,
       emitidoPor,
-      arquivo: arquivoPath,
+      arquivo: arquivoPath, // Caminho do arquivo salvo na pasta
       arquivoNome,
       arquivoTipo,
       observacoes
-    });
-
+    };
+    
+    console.log('8. Dados para salvar no banco:', documentoData);
+    
+    const novoDocumento = new DocumentoSSMA(documentoData);
     await novoDocumento.save();
-    console.log('✅ Documento salvo no banco:', novoDocumento);
+    
+    console.log('9. SUCESSO: Documento salvo no banco:', novoDocumento._id);
 
     res.json({
       success: true,
       message: 'Documento criado com sucesso',
-      documento: novoDocumento
+      documento: novoDocumento,
+      arquivoSalvo: arquivoPath ? 'SIM' : 'NÃO'
     });
 
   } catch (error) {
-    console.error('❌ Erro ao criar documento:', error);
+    console.error('=== ERRO COMPLETO ===');
+    console.error('Tipo do erro:', error.constructor.name);
+    console.error('Mensagem:', error.message);
+    console.error('Stack:', error.stack);
+    
     res.status(500).json({ 
       success: false, 
       message: 'Erro ao criar documento',
-      error: error.message 
+      error: error.message,
+      errorType: error.constructor.name
     });
   }
 });
