@@ -11,17 +11,28 @@ console.log('🚀 Iniciando servidor...');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Importar modelos
-const Cliente = require('./src/models/clientes');
-const Usuario = require('./src/models/Usuario');
+// CORS - PRIMEIRO MIDDLEWARE (deve ser o primeiro)
+app.use((req, res, next) => {
+  console.log('CORS Middleware - Method:', req.method, 'Path:', req.path);
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 
-// Importar rotas
+  if (req.method === 'OPTIONS') {
+    console.log('CORS - Responding to OPTIONS request');
+    return res.sendStatus(200);
+  }
+
+  next();
+});
+
+// Importar rotas (mantendo apenas essenciais para testar)
 const loginRoutes = require('./src/routes/login');
-const cadastroRoutes = require('./src/routes/cadastro');
-const clientesRoutes = require('./src/routes/clientes');
-const orcamentosRoutes = require('./src/routes/orcamentos');
-const colaboradoresRoutes = require('./src/routes/colaboradores');
-const documentosSSMARoutes = require('./src/routes/documentos_ssma');
+// const cadastroRoutes = require('./src/routes/cadastro');
+// const clientesRoutes = require('./src/routes/clientes');
+// const orcamentosRoutes = require('./src/routes/orcamentos');
+// const colaboradoresRoutes = require('./src/routes/colaboradores');
+// const documentosSSMARoutes = require('./src/routes/documentos_ssma');
 // const servicosRoutes = require('./src/routes/servicosDedicado'); // Não usado
 
 
@@ -42,19 +53,6 @@ app.use(fileUpload({
 
 // Servir arquivos estáticos
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// CORS (liberado para frontend)
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-
-  if (req.method === 'OPTIONS') {
-    return res.sendStatus(200);
-  }
-
-  next();
-});
 
 const metrics = {
   startedAt: Date.now(),
@@ -81,13 +79,13 @@ app.use((req, res, next) => {
 
 // ================= ROTAS IMPORTADAS =================
 
-// Usar rotas existentes
+// Usar rotas existentes (apenas login para testar)
 app.use('/api', loginRoutes);
-app.use('/api', cadastroRoutes);
-app.use('/api', clientesRoutes);
-app.use('/api', orcamentosRoutes);
-app.use('/api', colaboradoresRoutes);
-app.use('/api', documentosSSMARoutes);
+// app.use('/api', cadastroRoutes);
+// app.use('/api', clientesRoutes);
+// app.use('/api', orcamentosRoutes);
+// app.use('/api', colaboradoresRoutes);
+// app.use('/api', documentosSSMARoutes);
 // app.use('/api', servicosRoutes); // Removido para evitar conflito
 
 // Rota direta para /api/Servicos - Simplificada
@@ -134,7 +132,7 @@ app.post('/api/Servicos', async (req, res) => {
     }
 
     // Criar novo serviço
-    const novoServico = new Servico({
+    const novoServico = new ServicoPlural({
       cliente,
       numeroOrcamento: numeroOrcamento || '',
       tipoServico,

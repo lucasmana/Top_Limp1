@@ -3,6 +3,19 @@ const mongoose = require('mongoose');
 // Conectar ao banco Colaboradores para documentos SSMA (mesmo banco dos colaboradores)
 const colaboradoresDB = mongoose.createConnection('mongodb://127.0.0.1:27017/Colaboradores');
 
+// Eventos de conexão para depuração
+colaboradoresDB.on('connected', () => {
+  console.log('DocumentoSSMA: Conexão MongoDB estabelecida com banco Colaboradores');
+});
+
+colaboradoresDB.on('error', (err) => {
+  console.error('DocumentoSSMA: Erro na conexão MongoDB:', err);
+});
+
+colaboradoresDB.on('disconnected', () => {
+  console.log('DocumentoSSMA: Desconectado do MongoDB');
+});
+
 // Schema para documento SSMA
 const documentoSSMASchema = new mongoose.Schema({
   colaboradorId: { type: String, required: true },

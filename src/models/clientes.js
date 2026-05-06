@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 
-// Conectar ao banco Cadastro para clientes
-const cadastroDB = mongoose.createConnection('mongodb://127.0.0.1:27017/Cadastro');
-
+// Schema para cliente
 const ClienteSchema = new mongoose.Schema({
   razaoSocial: {
     type: String,
@@ -78,6 +76,14 @@ const ClienteSchema = new mongoose.Schema({
   }
 }, {
   timestamps: true
+});
+
+// Conectar ao banco Cadastro para clientes
+const cadastroDB = mongoose.createConnection('mongodb://127.0.0.1:27017/Cadastro');
+
+// Evento de erro para evitar crash
+cadastroDB.on('error', (err) => {
+  console.error('Clientes: Erro na conexão MongoDB:', err);
 });
 
 module.exports = cadastroDB.model('clientes', ClienteSchema, 'clientes');
